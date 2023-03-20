@@ -5,8 +5,8 @@ chrome.storage.local.set({ conversionRate });
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 	if (message.hasOwnProperty('enableConversion')) {
-	enableConversion = message.enableConversion;
-	processPage();
+		enableConversion = message.enableConversion;
+		processPage();
 	}
 });
 
@@ -28,13 +28,11 @@ function processPage() {
 
 function replaceTextNodes(node) {
 	if (node.nodeType === Node.TEXT_NODE) {
-		// ChatGPT generated.... a starting point but not good enough.
-		//const regex = /((?:￥|¥|P)\.?~?\d+(?:\.\d{1,2})?)(?<!\s\()/;
-		//const regex = /((?:￥|¥|P)\.?~?\d+(?:\.\d{1,2})?)/gi;
-		//const regex2 = /(\d+(?:\.\d+)?)\s*(Yuan)/i;
 		// Built using RegExr.com.... thank you so much for this tool. 10/10
-		console.log("from within...")
-		const regex = /((?:￥|¥|P)\.?\~?(\d+(\.?\d+)?(?!\ \(|\d)))/gi;
+		// Y|P(digits)Y|P excluding already converted
+		// this still fails on some, like ¥45+39 = only ¥49 detected.
+		const regex = /(((?:￥|¥|P|CNY|Y|yuan )\.?\~?)(\d+(\.?\d+)?(?!(\ \()|\d|\.)))|((\d+(\.?\d+)?)((?:￥|¥|P|CNY|Y| yuan)(?!\ \(|\d|\.)))/gi;
+		
 		const originalContent = node.textContent;
 
 		const replacement = (matched) => {
@@ -89,7 +87,7 @@ let flag = 0;
 
 // Create a MutationObserver object
 const observer = new MutationObserver(mutationsList => {
-	// Check if new content has been added to the Reddit page
+	// Check if new content has been added to the page (Reddit for instance)
 	const newElements = mutationsList.reduce((acc, mutation) => {
 		mutation.addedNodes.forEach(node => {
 			if (node.nodeType === Node.ELEMENT_NODE) {
