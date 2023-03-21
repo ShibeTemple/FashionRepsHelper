@@ -38,12 +38,12 @@ function processPage() {
 }
 
 function replaceTextNodes(node) {
-	console.log("updating nodes");
+	//console.log("updating nodes");
 	if (node.nodeType === Node.TEXT_NODE) {
 		// Built using RegExr.com.... thank you so much for this tool. 10/10
 		// Y|P(digits)Y|P excluding already converted
 		// this still fails on some, like ¥45+39 = only ¥49 detected.
-		const regex = /(((?:￥|¥|P|CNY|Y|yuan)\.?\~?)(\d+(\.?\d+)?(?!(\ \()|\d|\.)))|((\d+(\.?\d+)?)((?:￥|¥|P|CNY|Y|yuan)(?!\ \(|\d|\.)))/gi;
+		const regex = /(((?:￥|¥|CNY|yuan)\.?\~?)(\d+(\.?\d+)?(?!(\ \()|\d|\.)))|((\d+(\.?\d+)?)((?:￥|¥|CNY|yuan)(?!\ \(|\d|\.)))/gi;
 
 		const originalContent = node.textContent;
 
