@@ -1,24 +1,35 @@
-let enableConversion = true;
 const verbose = true;
 const conversionRate = 0.145; // Update this value according to the current exchange rate
-chrome.storage.local.set({ conversionRate });
+chrome.storage.local.set({ conversionRate }); // update in settings for popup
+
+// define global variable for user settings
+let enableConversion; // internal, to be updated by user
+console.log("enableConversion: ", enableConversion);
+
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-	if (message.hasOwnProperty('enableConversion')) {
-		enableConversion = message.enableConversion;
+	if (message.hasOwnProperty('FRHenableConversion')) {
+		console.log("Message recieved from popup, for FRHenableConversion: ", message.FRHenableConversion)
+		enableConversion = message.FRHenableConversion;
 		processPage();
 	}
 });
 
-chrome.storage.local.get('enableConversion', (data) => {
-	enableConversion = data.enableConversion ?? true;
+
+// get current setting:
+chrome.storage.local.get(["FRHenableConversion"], function(result) {
+	console.log("inital value retrieved from local storage: ", result.FRHenableConversion);
+	// undefined = true, true = true, false = false.
+	enableConversion = result.FRHenableConversion ?? true;
+	console.log("enableConversion: ", enableConversion);
+	// update page correspondingly
 	processPage();
 });
 
-const modifiedNodes = new Map();
+let modifiedNodes = new Map();
 
 function processPage() {
-	console.log("LOGGING");
+	//console.log("LOGGING");
 	if (enableConversion) {
 		replaceTextNodes(document.body);
 	} else {
@@ -27,12 +38,13 @@ function processPage() {
 }
 
 function replaceTextNodes(node) {
+	console.log("updating nodes");
 	if (node.nodeType === Node.TEXT_NODE) {
 		// Built using RegExr.com.... thank you so much for this tool. 10/10
 		// Y|P(digits)Y|P excluding already converted
 		// this still fails on some, like ¥45+39 = only ¥49 detected.
-		const regex = /(((?:￥|¥|P|CNY|Y|yuan )\.?\~?)(\d+(\.?\d+)?(?!(\ \()|\d|\.)))|((\d+(\.?\d+)?)((?:￥|¥|P|CNY|Y| yuan)(?!\ \(|\d|\.)))/gi;
-		
+		const regex = /(((?:￥|¥|P|CNY|Y|yuan)\.?\~?)(\d+(\.?\d+)?(?!(\ \()|\d|\.)))|((\d+(\.?\d+)?)((?:￥|¥|P|CNY|Y|yuan)(?!\ \(|\d|\.)))/gi;
+
 		const originalContent = node.textContent;
 
 		const replacement = (matched) => {
@@ -66,22 +78,28 @@ function replaceTextNodes(node) {
 }
 
 function revertChanges() {
-	for (const [node, originalContent] of modifiedNodes.entries()) {
-		node.textContent = originalContent;
+	// check if there are any modified entries
+	if (modifiedNodes.size > 0) {
+		for (const [node, originalContent] of modifiedNodes.entries()) {
+			let currentNode = node;
+			let currentContent = node.textContent;
+			while (modifiedNodes.has(currentNode)) {
+				currentNode.textContent = modifiedNodes.get(currentNode);
+				modifiedNodes.delete(currentNode);
+				currentNode = currentNode.parentNode;
+			}
+			// sets the node's text content to its original content.
+			currentNode.textContent = originalContent;
+		}
 	}
-	modifiedNodes.clear();
 }
 
 
 
 
+// global document attribute
+document.documentElement.setAttribute("fashionrepshelper", true);
 
-document.documentElement.setAttribute("fashionrepshelper", "true");
-
-
-console.log("Hello.");
-
-let flag = 0;
 
 // PAGE UPDATE CHECKER:
 
@@ -99,12 +117,13 @@ const observer = new MutationObserver(mutationsList => {
 
 	if (newElements.length > 0) {
 		// Run your code here when new content is added to the Reddit page
-		//if (!flag) {
-			console.log("New content added")
-			processPage()
-			flag = 1
-		//}
-	
+
+		//console.log("New content added")
+		// only run if not the first time...
+		if (enableConversion != undefined) {
+			processPage();
+		}
+
 	}
 })
 

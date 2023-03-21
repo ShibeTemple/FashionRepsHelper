@@ -1,0 +1,48 @@
+(((?:￥|¥|P|CNY|Y|yuan) ?\.?\~?)(\d+(\.?\d+)?(?!(\ \()|\d|\.)))|((\d+(\.?\d+)?)( ?(?:￥|¥|P|CNY|Y|yuan)(?!\ \(|\d|\.)))
+// added " ?" for random spaces between currency indicator
+
+(((?:￥|¥|P|CNY|Y|yuan )\.?\~?)(\d+(\.?\d+)?(?!(\ \()|\d|\.)))|((\d+(\.?\d+)?)((?:￥|¥|P|CNY|Y| yuan)(?!\ \(|\d|\.)))
+
+(((?:￥|¥|P)\.?\~?)(\d+(\.?\d+)?(?!\ \(|\d)))|((\d+(\.?\d+)?)((?:￥|¥|P)(?!\ \(|\d)))
+
+sion & ¥50Text to see matches. Roll over ¥50matc.[¥50 ggagerg
+￥55|¥55|P55 |555513435￥
+￥55 ( |¥55 ( |P55 ( 
+
+¥~50
+¥.~50
+¥.50
+¥50
+¥51345
+¥5
+¥980
+¥9.80
+¥554.80
+¥39.80 Stussy Dice
+¥39.80
+¥ 5
+5 ¥ 
+5 ¥ (gaergaer
+¥ 5 (gaergaer
+¥39.80 ($523)
+39.80¥ ($523)
+¥50 ($
+¥50 ($523)
+¥50 ($7.25)
+¥5 ($
+¥5 ($523)
+¥5 ($7.25)
+¥5555 ($
+¥5555 ($523)
+¥5555 ($7.25)
+
+555513435￥
+555513435￥
+555513435￥
+50¥
+50¥ ($7.25)
+50¥ ($
+
+The side bar includes a Cheatsheet, full Reference, and Help. You can also Save & Share with the Community and view patterns ¥50you create or favorite in My Patterns.
+
+Explore results with the Tools below. Replace & List output custom results. Details lists capture groups. Explain describes your expres¥50sion in plain English.
